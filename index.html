@@ -124,11 +124,10 @@
     .sidebar .social a:hover { color: #fff; transform: scale(1.2); }
 
     /* ===== MAIN ===== */
-    /* .main { margin-left: var(--sidebar-w); } */
-    .main { margin-left: 0; margin-top: 70px; }
-      footer { margin-left: 0; }
+    .main { margin-left: 0; margin-top: 64px; }
+    footer { margin-left: 0 !important; }
 
-    section { min-height: 100vh; padding: 110px 90px 90px; }
+    section { min-height: 100vh; padding: 100px 90px 90px; }
 
     .section-label {
       font-size: 10px;
@@ -233,7 +232,7 @@
     }
 
     .hero-img-wrap img {
-      border-radius: 37px;
+      border-radius: 35px;
       height: 100%;
       width: auto;
       max-width: 400px;
@@ -1296,10 +1295,14 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1100px) {
-      section { padding: 90px 60px; }
-      #home { grid-template-columns: 1fr; padding: 60px; }
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      footer { margin-left: 0 !important; }
+      section { padding: 90px 50px; }
+      #home { grid-template-columns: 1fr; padding: 100px 50px 60px; }
       .hero-visual { display: none; }
-      .about-layout { grid-template-columns: 1fr; }
+      .hero-content { padding-left: 0; }
+      .about-layout { grid-template-columns: 1fr; gap: 40px; }
       .services-grid, .blog-grid, .testi-grid { grid-template-columns: repeat(2, 1fr); }
       .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
       .portfolio-item.wide { grid-column: span 1; }
@@ -1310,65 +1313,168 @@
     }
 
     @media (max-width: 768px) {
-      :root { --sidebar-w: 60px; }
-      section { padding: 70px 28px; }
+      .sidebar { display: none; }
+      .main { margin-left: 0 !important; margin-top: 64px; }
+      footer { margin-left: 0 !important; }
+      section { padding: 64px 20px 60px; }
+      #home {
+        grid-template-columns: 1fr;
+        padding: 90px 20px 50px;
+        min-height: auto;
+      }
+      .hero-visual { display: none; }
+      .hero-content { padding-left: 0; text-align: left; }
+      .hero-name { font-size: clamp(34px, 9vw, 54px); }
+      .hero-desc { font-size: 14px; max-width: 100%; }
+      .hero-btns { flex-wrap: wrap; gap: 12px; }
+      .btn { padding: 13px 24px; font-size: 10px; }
+      .hero-badge, .hero-counter { display: none; }
+      .hero-bg-text { font-size: 120px; }
+
+      .section-title { font-size: clamp(28px, 7vw, 40px); }
+      .section-sub { font-size: 14px; }
+
+      .about-layout { grid-template-columns: 1fr; gap: 32px; }
+      .about-img-stack { max-width: 280px; }
+      .about-img-stack .img-label { display: none; }
+      .about-img-stack::before { display: none; }
+      .info-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+
       .services-grid, .blog-grid, .testi-grid { grid-template-columns: 1fr; }
+      .services-header { flex-direction: column; align-items: flex-start; gap: 16px; }
       .portfolio-grid { grid-template-columns: 1fr; }
-      .stats-strip { grid-template-columns: repeat(2, 1fr); }
-      .timelines-wrap { grid-template-columns: 1fr; }
+
+      .stats-strip { grid-template-columns: repeat(2, 1fr); border-radius: 12px; }
+      .stat-col { padding: 28px 16px; }
+      .stat-col .num { font-size: 36px; }
+      .stat-col:not(:last-child)::after { display: none; }
+
+      .timelines-wrap { grid-template-columns: 1fr; gap: 36px; }
       .skills-cols { grid-template-columns: 1fr; }
-      .frow { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr; padding: 40px 28px; }
-      footer { margin-left: 60px; }
-      .footer-bottom { padding: 20px 28px; flex-direction: column; gap: 8px; }
+
+      .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+      .frow { grid-template-columns: 1fr; gap: 0; }
+
+      #testimonial { padding: 60px 20px; }
+      .testi-header { grid-template-columns: 1fr; gap: 16px; }
+
+      .footer-top { grid-template-columns: 1fr; padding: 36px 20px; gap: 24px; }
+      .footer-social { justify-content: flex-start; }
+      .footer-bottom { padding: 18px 20px; flex-direction: column; gap: 8px; text-align: center; }
     }
+
+    @media (max-width: 480px) {
+      section { padding: 56px 16px 50px; }
+      #home { padding: 80px 16px 44px; }
+      .hero-name { font-size: 32px; }
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .filter-tabs { gap: 6px; }
+      .filter-btn { padding: 7px 14px; font-size: 10px; }
+    }
+
     /* ===== TOP NAVBAR ===== */
-.top-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  background: linear-gradient(90deg, #ff1e3c, #ff0066);
-  display: flex;
-  align-items: center;
-  z-index: 2000;
-}
+    .top-navbar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 64px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      z-index: 2000;
+      box-shadow: 0 2px 20px rgba(232,25,44,0.3);
+    }
 
-.nav-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40px;
-}
+    .nav-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 32px;
+    }
 
-.nav-logo {
-  font-size: 24px;
-  font-weight: 900;
-  color: white;
-  font-family: 'Playfair Display', serif;
-}
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: white;
+      font-family: 'Playfair Display', serif;
+      white-space: nowrap;
+    }
 
-.nav-menu {
-  display: flex;
-  gap: 30px;
-}
+    .nav-menu {
+      display: flex;
+      gap: 26px;
+      align-items: center;
+    }
 
-.nav-menu a {
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  transition: 0.3s;
-}
+    .nav-menu a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      transition: color 0.25s;
+    }
 
-.nav-menu a:hover,
-.nav-menu a.active {
-  opacity: 0.8;
-}
+    .nav-menu a:hover,
+    .nav-menu a.active {
+      color: #fff;
+      opacity: 1;
+    }
+
+    /* Hamburger */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+      z-index: 10;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 24px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: flex; }
+      .nav-menu {
+        position: fixed;
+        top: 64px; left: 0; right: 0;
+        background: var(--primary);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      }
+      .nav-menu.open {
+        max-height: 400px;
+        padding: 8px 0 16px;
+      }
+      .nav-menu a {
+        width: 100%;
+        padding: 13px 28px;
+        font-size: 14px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.9);
+      }
+      .nav-menu a:last-child { border-bottom: none; }
+    }
   </style>
 </head>
 <body>
@@ -1398,8 +1504,10 @@
 <header class="top-navbar">
   <div class="nav-container">
     <div class="nav-logo">B. Mohit Reddy</div>
-
-    <nav class="nav-menu">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-menu" id="navMenu">
       <a href="#home" class="active">Home</a>
       <a href="#about">About</a>
       <a href="#service">Service</a>
@@ -1421,7 +1529,7 @@
 
     <div class="hero-visual">
       <div class="hero-img-wrap">
-        <img src="Images/mohit.jpg" alt="Robert Lee"/>
+        <img src="Images/mohit.jpg" alt="Mohit Reddy"/>
       </div>
     </div>
 
@@ -1450,7 +1558,7 @@
 
     <div class="about-layout">
       <div class="about-img-stack reveal-left">
-        <img src="Images/mohit1.png" alt="Robert Lee"/>
+        <img src="Images/mohit1.png" alt="Mohit Reddy"/>
         <span class="img-label">Designer</span>
       </div>
       <div>
@@ -1992,7 +2100,35 @@
     backTop.classList.toggle('show', window.scrollY > 600);
   });
 
-  /* ---- Parallax blobs ---- */
+  /* ---- Hamburger Menu ---- */
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    navMenu.classList.toggle('open');
+  });
+
+  // Close menu when a link is clicked
+  navMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navToggle.classList.remove('open');
+      navMenu.classList.remove('open');
+    });
+  });
+
+  /* ---- Active nav link on scroll ---- */
+  const topLinks = document.querySelectorAll('.nav-menu a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    document.querySelectorAll('section[id]').forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+    });
+    topLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
   document.addEventListener('mousemove', e => {
     const x = (e.clientX / window.innerWidth - 0.5) * 20;
     const y = (e.clientY / window.innerHeight - 0.5) * 20;
