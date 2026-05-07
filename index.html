@@ -123,11 +123,8 @@
     }
     .sidebar .social a:hover { color: #fff; transform: scale(1.2); }
 
-    /* ===== MAIN ===== */
-    .main { margin-left: 0; margin-top: 64px; }
-    footer { margin-left: 0 !important; }
-
-    section { min-height: 100vh; padding: 100px 90px 90px; }
+    /* ===== MAIN (overridden by PPT CSS below) ===== */
+    
 
     .section-label {
       font-size: 10px;
@@ -167,14 +164,8 @@
 
     /* ===== HERO ===== */
     #home {
-      display: grid;
-      grid-template-columns: 420px 1fr;
-      align-items: center;
       background: #fff;
       position: relative;
-      overflow: hidden;
-      padding: 0 90px 0 90px;
-      min-height: 100vh;
     }
 
     /* Red blob/circle decorations like in reference */
@@ -182,6 +173,7 @@
       position: absolute;
       border-radius: 50%;
       pointer-events: none;
+      animation: float 10s ease-in-out infinite;
     }
     .hero-blob-1 {
       bottom: -80px; left: -80px;
@@ -197,6 +189,75 @@
       top: -60px; right: 250px;
       width: 280px; height: 280px;
       background: radial-gradient(circle, rgba(255,107,138,0.08) 0%, transparent 70%);
+    }
+
+    /* ===== HERO LEFT CORNER — WATER RIPPLE WAVES ===== */
+    .hero-deco-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 560px;
+      height: 560px;
+      pointer-events: none;
+      z-index: 1;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .hero-deco-left::before,
+    .hero-deco-left::after { display: none; }
+
+    .hero-deco-inner {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 560px;
+      height: 560px;
+      pointer-events: none;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    /* Each ring starts at a different scale so they are always separated —
+       like ripples already spread across the water at different distances.
+       animation-delay pushes them out of phase so a new ring launches
+       only after the previous one has moved far enough away. */
+    .ripple-ring {
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: transparent;
+      animation: rippleWave 6s linear infinite;
+    }
+
+    .ripple-ring:nth-child(1) {
+      animation-delay: 0s;
+      border: 20px solid rgba(232, 25, 44, 0.75);
+      background: rgba(232, 25, 44, 0.16);
+    }
+    .ripple-ring:nth-child(2) {
+      animation-delay: -1.5s;  /* already 1.5s into its cycle = 25% spread */
+      border: 17px solid rgba(232, 25, 44, 0.52);
+      background: rgba(232, 25, 44, 0.09);
+    }
+    .ripple-ring:nth-child(3) {
+      animation-delay: -3s;    /* already 3s in = 50% spread */
+      border: 14px solid rgba(255, 100, 130, 0.38);
+      background: rgba(255, 100, 130, 0.06);
+    }
+    .ripple-ring:nth-child(4) {
+      animation-delay: -4.5s;  /* already 4.5s in = 75% spread */
+      border: 11px solid rgba(255, 160, 185, 0.24);
+      background: rgba(255, 160, 185, 0.03);
+    }
+
+    @keyframes rippleWave {
+      0%   { transform: scale(1);   opacity: 1; }
+      85%  { opacity: 0.18; }
+      100% { transform: scale(4.8); opacity: 0; }
     }
 
     /* bg text */
@@ -291,15 +352,32 @@
     .hero-tag {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      gap: 4px;
+      font-size: 22px;
+      letter-spacing: 1px;
+      text-transform: none;
       color: var(--primary);
       margin-bottom: 18px;
-      font-weight: 600;
+      font-weight: 700;
       opacity: 0;
       animation: fadeUp 0.7s 0.1s ease forwards;
+      min-height: 32px;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      color: var(--primary);
+      font-weight: 300;
+      font-size: 24px;
+      line-height: 1;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: cursorBlink 1s step-start infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
     }
 
     .hero-name {
@@ -431,31 +509,79 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* dot navigation (right side like reference) */
+    /* dot navigation (right side) */
     .dot-nav {
       position: fixed;
-      right: 28px;
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 16px;
       z-index: 900;
     }
 
+    /* each link is just the dot size — label is absolutely positioned so it NEVER shifts layout */
     .dot-nav a {
-      width: 10px; height: 10px;
+      position: relative;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    /* label floats to the left, absolutely positioned — zero layout impact */
+    .dot-nav a::before {
+      content: attr(title);
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%) translateX(6px);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+      opacity: 0;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .dot-nav a:hover::before {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* the dot — transparent fill, thin RED border always */
+    .dot-nav a::after {
+      content: '';
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: #ccc;
-      border: 2px solid transparent;
-      transition: all 0.3s;
+      background: transparent;
+      border: 1.5px solid var(--primary);
+      transition: border-color 0.25s, transform 0.25s, background 0.25s;
+      flex-shrink: 0;
       display: block;
     }
 
-    .dot-nav a.active, .dot-nav a:hover {
+    /* active dot — solid red fill */
+    .dot-nav a.active::after {
       background: var(--primary);
-      border-color: rgba(232,25,44,0.3);
-      transform: scale(1.3);
+      border-color: var(--primary);
+      border-width: 1.5px;
+      transform: scale(1.2);
+    }
+
+    /* hover dot — solid red fill */
+    .dot-nav a:hover::after {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.2);
     }
 
     /* ===== ABOUT ===== */
@@ -650,7 +776,7 @@
     /* Skills */
     .skills-title {
       font-family: 'Playfair Display', serif;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
       margin-bottom: 36px;
       color: var(--text);
@@ -662,21 +788,25 @@
       gap: 28px 50px;
     }
 
-    .skill-bar-wrap { margin-bottom: 10px; }
+    .skill-bar-wrap { margin-bottom: 18px; }
 
     .skill-top {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 9px;
-      color: #444;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
     }
 
-    .skill-pct { color: var(--primary); }
+    .skill-pct {
+      color: var(--primary);
+      font-size: 15px;
+      font-weight: 700;
+    }
 
     .bar-track {
-      height: 4px;
+      height: 8px;
       background: #eee;
       border-radius: 10px;
       overflow: hidden;
@@ -1138,8 +1268,9 @@
 
     /* ===== FOOTER ===== */
     footer {
-      margin-left: var(--sidebar-w);
+      margin: 40px -90px -60px -90px;   /* bleed to slide edges, cancel section padding */
       background: #111;
+      width: calc(100% + 180px);
     }
 
     .footer-top {
@@ -1306,7 +1437,7 @@
     @media (max-width: 1100px) {
       .sidebar { display: none; }
       .main { margin-left: 0; }
-      footer { margin-left: 0 !important; }
+      
       section { padding: 90px 50px; }
       #home { grid-template-columns: 1fr; padding: 100px 50px 60px; }
       .hero-visual { display: none; }
@@ -1318,13 +1449,14 @@
       .contact-layout { grid-template-columns: 1fr; }
       .footer-top { grid-template-columns: 1fr 1fr; }
       .footer-links { display: none; }
+      footer { margin: 40px -50px -90px -50px; width: calc(100% + 100px); }
       .dot-nav { display: none; }
     }
 
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .main { margin-left: 0 !important; margin-top: 64px; }
-      footer { margin-left: 0 !important; }
+      
       section { padding: 64px 20px 60px; }
       #home {
         grid-template-columns: 1fr;
@@ -1370,6 +1502,7 @@
       .footer-top { grid-template-columns: 1fr; padding: 36px 20px; gap: 24px; }
       .footer-social { justify-content: flex-start; }
       .footer-bottom { padding: 18px 20px; flex-direction: column; gap: 8px; text-align: center; }
+      footer { margin: 40px -20px -60px -20px; width: calc(100% + 40px); }
     }
 
     @media (max-width: 480px) {
@@ -1387,52 +1520,108 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%;
-      height: 64px;
-      background: var(--primary);
+      height: 68px;
+      background: transparent;
       display: flex;
       align-items: center;
+      justify-content: center;
       z-index: 2000;
-      box-shadow: 0 2px 20px rgba(232,25,44,0.3);
+      padding: 0 40px;
     }
 
     .nav-container {
-      width: 100%;
-      max-width: 1400px;
-      margin: auto;
+      width: 78%;
+      max-width: 1300px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 32px;
+      padding: 0 40px;
+      height: 70px;
+      background: linear-gradient(90deg, #ff1f3a 0%, #ff1773 100%);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(232,25,44,0.28);
     }
 
     .nav-logo {
-      font-size: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
       font-weight: 900;
-      color: white;
+      color: #fff;
       font-family: 'Playfair Display', serif;
       white-space: nowrap;
+      text-transform: none;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-logo::before {
+      content: 'M';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
     }
 
     .nav-menu {
       display: flex;
-      gap: 26px;
+      gap: 28px;
       align-items: center;
     }
 
     .nav-menu a {
-      color: rgba(255,255,255,0.85);
+      color: rgba(255,255,255,0.90);
       text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      transition: color 0.25s;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      position: relative;
+      transition: color 0.22s ease;
+      text-transform: none;
     }
 
-    .nav-menu a:hover,
-    .nav-menu a.active {
-      color: #fff;
-      opacity: 1;
+    /* All nav links default white */
+    .nav-menu a {
+      color: rgba(255,255,255,0.90);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      position: relative;
+      transition: color 0.22s ease;
+      text-transform: none;
     }
+
+    /* Active link = black (current section) */
+    .nav-menu a.active {
+      color: #111;
+      font-weight: 700;
+    }
+
+    /* Non-active links turn black on hover */
+    .nav-menu a:not(.active):hover {
+      color: #111;
+      background: transparent;
+    }
+
+    /* Active link hover stays black */
+    .nav-menu a.active:hover {
+      color: #111;
+      background: transparent;
+    }
+
+    /* NO underline */
+    .nav-menu a::after { display: none; }
 
     /* Hamburger */
     .nav-toggle {
@@ -1645,10 +1834,101 @@
     }
     /* ===== END MODAL ===== */
 
-    /* ===== GLOBAL SHAKE FIX ===== */
-    /* Prevent translateY hover from causing scrollbar-triggered reflow */
-    body { overflow-x: hidden; }
-    #portfolio, #blog, #service { overflow: hidden; }
+    /* ===== SECTION SLIDE-IN ANIMATIONS ===== */
+    .slide-in-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .slide-in-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .slide-in-up {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .slide-in-left.in, .slide-in-right.in, .slide-in-up.in {
+      opacity: 1;
+      transform: translate(0);
+    }
+    .slide-d1 { transition-delay: 0.1s !important; }
+    .slide-d2 { transition-delay: 0.2s !important; }
+    .slide-d3 { transition-delay: 0.3s !important; }
+    .slide-d4 { transition-delay: 0.4s !important; }
+    .slide-d5 { transition-delay: 0.5s !important; }
+
+    /* ================================================================
+       FULL-PAGE SLIDE ENGINE  (like sample provided)
+       - Page is locked — no browser scroll bar
+       - .main stage fills viewport below navbar
+       - Each section = one full slide, stacked absolutely
+       - Active = translateX(0), next waits at +100%, prev at -100%
+       - When internal scroll hits bottom → next slide
+       - When internal scroll hits top    → prev slide
+    ================================================================ */
+
+    html, body {
+      height: 100%;
+      overflow: hidden !important;
+    }
+
+    /* Slide stage */
+    .main {
+      position: fixed;
+      top: 68px; left: 0;
+      width: 100%;
+      height: calc(100vh - 68px);
+      overflow: hidden;
+      margin: 0 !important;
+    }
+
+    /* Every section = one slide panel */
+    .main section {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 60px 90px;
+      /* start off-screen right */
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.72s cubic-bezier(0.77, 0, 0.18, 1),
+                  opacity  0.72s cubic-bezier(0.77, 0, 0.18, 1);
+      will-change: transform, opacity;
+      z-index: 1;
+    }
+
+    /* Active slide */
+    .main section.slide-active {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    /* Slide sitting to the LEFT (already passed) */
+    .main section.slide-prev {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Hero keeps its grid layout */
+    #home {
+      display: grid !important;
+      grid-template-columns: 420px 1fr;
+      align-items: center;
+      padding: 0 90px !important;
+    }
+
+    .ppt-content { display: contents; }
 
   </style>
 </head>
@@ -1678,7 +1958,7 @@
 <!-- TOP NAVBAR -->
 <header class="top-navbar">
   <div class="nav-container">
-    <div class="nav-logo">B. Mohit Reddy</div>
+    <div class="nav-logo">Mohit Reddy</div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -1701,6 +1981,13 @@
     <div class="hero-blob hero-blob-1"></div>
     <div class="hero-blob hero-blob-2"></div>
     <div class="hero-blob hero-blob-3"></div>
+    <div class="hero-deco-left"></div>
+    <div class="hero-deco-inner">
+      <div class="ripple-ring"></div>
+      <div class="ripple-ring"></div>
+      <div class="ripple-ring"></div>
+      <div class="ripple-ring"></div>
+    </div>
 
     <div class="hero-visual">
       <div class="hero-img-wrap">
@@ -1713,7 +2000,7 @@
         <span class="dot"></span>
         Available for Freelance
       </div> -->
-      <div class="hero-tag">AWS | DevOps | ServiceNow Developer</div>
+      <div class="hero-tag"><span id="typingText"></span><span class="typing-cursor">|</span></div>
       <h1 class="hero-name">
         Hello, I'm<br>
         Mohit Reddy
@@ -1732,7 +2019,7 @@
     <h2 class="section-title reveal d1">About Me</h2>
 
     <div class="about-layout">
-      <div class="about-img-stack reveal-left">
+      <div class="about-img-stack reveal-left slide-in-left">
         <img src="Images/mohit1.png" alt="Mohit Reddy"/>
         <span class="img-label">Developer</span>
       </div>
@@ -2148,37 +2435,38 @@
         <button class="btn-send"><i class="fas fa-paper-plane"></i> Send Message</button>
       </div>
     </div>
+
+    <!-- FOOTER — lives inside contact slide -->
+    <footer>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo-text">B. Mohit Reddy</div>
+          <p>AWS | DevOps | ServiceNow Developer based in Hyderabad, India.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#service">Services</a>
+          <a href="#portfolio">Projects</a>
+          <a href="#blog">Blog</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-social">
+          <a href="mailto:bijjulamohith19@gmail.com"><i class="fas fa-envelope"></i></a>
+          <a href="tel:+919908767340"><i class="fas fa-phone"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Copyright &copy; 2025 <a href="#">Bijjula Mohit Reddy</a>. All rights reserved.</p>
+        <p>Designed with <span style="color:var(--primary)">♥</span> in Hyderabad</p>
+      </div>
+    </footer>
+
   </section>
 
 </div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <div class="logo-text">B. Mohit Reddy</div>
-      <p>AWS | DevOps | ServiceNow Developer based in Hyderabad, India.</p>
-    </div>
-    <div class="footer-links">
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#service">Services</a>
-      <a href="#portfolio">Projects</a>
-      <a href="#blog">Blog</a>
-      <a href="#contact">Contact</a>
-    </div>
-    <div class="footer-social">
-      <a href="mailto:bijjulamohith19@gmail.com"><i class="fas fa-envelope"></i></a>
-      <a href="tel:+919908767340"><i class="fas fa-phone"></i></a>
-      <a href="#"><i class="fab fa-linkedin-in"></i></a>
-      <a href="#"><i class="fab fa-github"></i></a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>Copyright &copy; 2025 <a href="#">Bijjula Mohit Reddy</a>. All rights reserved.</p>
-    <p>Designed with <span style="color:var(--primary)">♥</span> in Hyderabad</p>
-  </div>
-</footer>
 
 <!-- BACK TO TOP -->
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
@@ -2510,7 +2798,187 @@
 
   bmClose.addEventListener('click', closeModal);
   bmBackdrop.addEventListener('click', closeModal);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  /* ================================================================
+     FULL-PAGE SLIDE ENGINE
+     Triggers: wheel (at section top/bottom), touch swipe,
+               keyboard arrows, dot-nav clicks, nav-link clicks
+     Direction: scroll down → slide left (next), scroll up → slide right (prev)
+  ================================================================ */
+  (function () {
+    const sections  = Array.from(document.querySelectorAll('.main section'));
+    const dotLinks  = Array.from(document.querySelectorAll('.dot-nav a'));
+    const navLinks  = Array.from(document.querySelectorAll('.nav-menu a'));
+    if (!sections.length) return;
+
+    let current   = 0;
+    let animating = false;
+    const DUR     = 750; // must match CSS transition ms
+
+    /* ---- helpers ---- */
+    function setSlides(idx) {
+      sections.forEach((s, i) => {
+        s.classList.remove('slide-active', 'slide-prev');
+        if (i < idx)  s.classList.add('slide-prev');   // left of current
+        if (i === idx) s.classList.add('slide-active'); // visible
+        // i > idx stays off-screen right (default CSS)
+      });
+      dotLinks.forEach((d, i) => d.classList.toggle('active', i === idx));
+      const id = sections[idx]?.id || '';
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    }
+
+    function goTo(idx) {
+      if (animating || idx === current || idx < 0 || idx >= sections.length) return;
+      animating = true;
+
+      // Reset scroll position on the incoming slide
+      sections[idx].scrollTop = 0;
+
+      current = idx;
+      setSlides(current);
+
+      setTimeout(() => { animating = false; }, DUR);
+    }
+
+    /* ---- Initial state ---- */
+    setSlides(0);
+
+    /* ---- Wheel (mouse scroll) ---- */
+    // Accumulator so one small flick doesn't instantly jump
+    let wheelAcc = 0;
+    const THRESH = 60;
+
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (animating) return;
+
+      const sec      = sections[current];
+      const atBottom = (sec.scrollHeight - sec.scrollTop - sec.clientHeight) < 4;
+      const atTop    = sec.scrollTop < 4;
+
+      if (e.deltaY > 0) {
+        // Scrolling DOWN
+        if (!atBottom) {
+          // Section still has content below — let it scroll naturally
+          sec.scrollTop += e.deltaY;
+          wheelAcc = 0;
+          return;
+        }
+        // At bottom — accumulate
+        wheelAcc += Math.abs(e.deltaY);
+        if (wheelAcc >= THRESH) { wheelAcc = 0; goTo(current + 1); }
+      } else {
+        // Scrolling UP
+        if (!atTop) {
+          sec.scrollTop += e.deltaY;
+          wheelAcc = 0;
+          return;
+        }
+        wheelAcc += Math.abs(e.deltaY);
+        if (wheelAcc >= THRESH) { wheelAcc = 0; goTo(current - 1); }
+      }
+    }, { passive: false });
+
+    /* ---- Touch swipe ---- */
+    let touchY0 = 0;
+    window.addEventListener('touchstart', e => {
+      touchY0 = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', e => {
+      if (animating) return;
+      const dy   = touchY0 - e.changedTouches[0].clientY;
+      const sec  = sections[current];
+      const atBottom = (sec.scrollHeight - sec.scrollTop - sec.clientHeight) < 10;
+      const atTop    = sec.scrollTop < 10;
+      if (dy > 60 && atBottom)  goTo(current + 1);
+      if (dy < -60 && atTop)   goTo(current - 1);
+    }, { passive: true });
+
+    /* ---- Keyboard ---- */
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+      if (e.key === 'ArrowUp'   || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    });
+
+    /* ---- Dot-nav ---- */
+    dotLinks.forEach((d, i) => {
+      d.addEventListener('click', e => { e.preventDefault(); goTo(i); });
+    });
+
+    /* ---- Top navbar links ---- */
+    navLinks.forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const id  = a.getAttribute('href').replace('#', '');
+        const idx = sections.findIndex(s => s.id === id);
+        if (idx !== -1) goTo(idx);
+      });
+    });
+
+  })();
+
+
+
+
+
+
+
+
+
+  /* ---- Element slide-in animations triggered when section becomes active ---- */
+  // These are now handled by the PPT engine above
+
+  /* ---- Typing animation (smooth, natural rhythm) ---- */
+  const typingEl = document.getElementById('typingText');
+  if (typingEl) {
+    const words = ['AWS Developer', 'DevOps Engineer', 'ServiceNow Developer'];
+    let wIdx = 0, cIdx = 0, deleting = false, pausing = false;
+
+    function getRandDelay(base, variance) {
+      return base + Math.random() * variance;
+    }
+
+    function typeLoop() {
+      if (pausing) return;
+      const word = words[wIdx];
+
+      if (!deleting) {
+        cIdx++;
+        typingEl.textContent = word.slice(0, cIdx);
+
+        if (cIdx === word.length) {
+          // Pause at end before deleting
+          pausing = true;
+          setTimeout(() => {
+            pausing = false;
+            deleting = true;
+            typeLoop();
+          }, 2200);
+          return;
+        }
+        // Natural typing: slightly random speed, slower at word start/end
+        const atEdge = cIdx <= 2 || cIdx >= word.length - 2;
+        setTimeout(typeLoop, getRandDelay(atEdge ? 110 : 75, 40));
+
+      } else {
+        cIdx--;
+        typingEl.textContent = word.slice(0, cIdx);
+
+        if (cIdx === 0) {
+          deleting = false;
+          wIdx = (wIdx + 1) % words.length;
+          // Short pause before typing next word
+          setTimeout(typeLoop, 480);
+          return;
+        }
+        // Delete is slightly faster than typing, also randomised
+        setTimeout(typeLoop, getRandDelay(42, 22));
+      }
+    }
+
+    setTimeout(typeLoop, 1000);
+  }
 
 </script>
 </body>
